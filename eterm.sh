@@ -12,7 +12,7 @@ orange='\e[0;33m'
 print_menu() {
     echo $Blue2"========================================================================="
     figlet "Easy Terminal" | lolcat
-    echo " [---] Welcome to Easy Terminal by: [---]" Version:1.2.6 Beta lolcat
+    echo " [---] Welcome to Easy Terminal by: [---]" Version:1.2.6 Beta | lolcat
     figlet "BO7MED MIX YT" | lolcat
     echo $Blue2"========================================================================="
     echo 
