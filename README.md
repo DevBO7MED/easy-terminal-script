@@ -9,6 +9,7 @@ A bash script for Kali Linux beginners with an interactive menu for managing Met
 
    Make sure you have sudo privileges to install necessary packages.
    sudo ./install.sh
+   
    After the installation is complete, you can run the script with:
    ./eterm.sh
 
