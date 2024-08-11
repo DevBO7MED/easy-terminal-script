@@ -48,46 +48,59 @@ show_ip_addresses() {
 
 
 update_script() {
-    script_dir="/home/kali/easy-terminal-script"
+    
     repo_url="https://github.com/DevBO7MED/easy-terminal-script"
-    required_files="README.md LICENSE install.sh"
+    
+    script_dir=$(dirname "$(realpath "$0")")
+    
+    temp_dir="/tmp/easy-terminal-update"
 
-    echo "Updating repository in script directory $script_dir..."
-    cd $script_dir || { echo "Failed to change directory to $script_dir"; exit 1; }
+    echo "Updating repository..."
 
-    # Fetch the latest changes from the remote repository
-    git fetch --quiet
+    
+    mkdir -p "$temp_dir"
 
-    # Check for updates by comparing local and remote branches
-    local_changes=$(git status --porcelain)
-    if [ -n "$local_changes" ]; then
-        echo "Local changes detected. Resetting to the latest commit..."
-        git reset --hard HEAD
+   
+    echo "Cloning repository to temporary directory..."
+    git clone --depth 1 $repo_url "$temp_dir" > /dev/null 2>&1
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to clone the repository. Please check your internet connection and try again."
+        exit 1
     fi
 
-    echo "Pulling latest changes..."
-    git pull --force $repo_url main
+   
+    files_to_check="install.sh eterm.sh"
 
-    # Check for missing files after pulling
-    missing_files=""
-    for file in $required_files; do
-        if [ ! -f "$script_dir/$file" ]; then
-            missing_files="$missing_files $file"
+    
+    update_needed=0
+    for file in $files_to_check; do
+        if [ -f "$script_dir/$file" ] && [ -f "$temp_dir/$file" ]; then
+            
+            if ! cmp -s "$script_dir/$file" "$temp_dir/$file"; then
+                echo "$file has been updated."
+                update_needed=1
+            fi
+        else
+            echo "$file is missing in the script directory."
+            update_needed=1
         fi
     done
 
-    if [ -n "$missing_files" ]; then
-        echo "The following required files are missing: $missing_files"
-        echo "Attempting to restore missing files..."
-        git checkout HEAD -- $missing_files
-        if [ $? -eq 0 ]; then
-            echo "Missing files restored successfully!"
-        else
-            echo "Failed to restore missing files. Please check manually."
-        fi
+    if [ $update_needed -eq 1 ]; then
+        echo "Updating files..."
+        for file in $files_to_check; do
+            if [ -f "$temp_dir/$file" ]; then
+                cp "$temp_dir/$file" "$script_dir/"
+            fi
+        done
+        echo "Files updated successfully!"
     else
-        echo "All required files are present."
+        echo "No updates found for the specified files."
     fi
+
+
+    rm -rf "$temp_dir"
 
     echo "Press [ENTER] to return to the menu."
     read cont
@@ -101,7 +114,7 @@ nmap_options() {
     echo -e $orange "  +------------------------------------------+"
     echo -e $orange "  |$white [1] $yellow Basic Scan$orange                      |"
     echo -e $orange "  |$white [2] $yellow Version Detection$orange               |"
-    echo -e $orange "  |$white [3] $yellow OS Detection$orange                      |"
+    echo -e $orange "  |$white [3] $yellow OS Detection$orange                    |"
     echo -e $orange "  |$white [4] $yellow All Scan$orange                        |"
     echo -e $orange "  +------------------------------------------+"
     echo ""
