@@ -21,14 +21,14 @@ Run the Installation Script
 Make sure you have sudo privileges to install the necessary packages:
 
 bash
-نسخ الكود
+ن
 sudo ./install.sh
 ##Usage
 
 After the installation is complete, you can run the script with:
 
 bash
-نسخ الكود
+
 ./eterm.sh
 ##Troubleshooting
 
