@@ -12,26 +12,22 @@ orange='\e[0;33m'
 print_menu() {
     echo $Blue2"========================================================================="
     figlet "Easy Terminal" | lolcat
-    echo "[---]       Welcome to Easy Terminal ( Version 1.3.8 Beta )       [---]"| lolcat 
+    echo "[---]       Welcome to Easy Terminal ( Version 1.3.9 Beta )       [---]"| lolcat 
     echo "[---] GitHub ( https://github.com/DevBO7MED/easy-terminal-script )[---]"| lolcat
+    echo "[---]                    Created by:DevBO7MED                     [---]"| lolcat
     figlet "BO7MED MIX YT" | lolcat
     echo $Blue2"========================================================================="
     echo 
-    echo $red "==============================" $red "=============================="
-    echo $red "[1]. Start Nmap Scan          " $red "[2]. Create Payload           "
-    echo $red "==============================" $red "=============================="
-    echo $cyan "==============================" $cyan "=============================="
-    echo $cyan "[3]. Create Metasploit Listener" $cyan"[4]. Start Nessus             "
-    echo $cyan "==============================" $cyan "=============================="
-    echo $okegreen  "==============================" $okegreen "=============================="
-    echo $okegreen  "[5]. Start Apache2            " $okegreen "[6]. Stop Apache2             "
-    echo $okegreen  "==============================" $okegreen "=============================="
-    echo $yellow "=============================="  $yellow "=============================="
-    echo $yellow "[7]. Update & Upgrade System  "  $yellow "[8]. Remove Old Files         "
-    echo $yellow "=============================="  $yellow "=============================="
-    echo $white "==============================" $white "=============================="
-    echo $white "[9]. Chek For Updates         " $white "[10]. Exit                    "
-    echo $white "==============================" $white "=============================="
+    echo $okegreen"    [01] Start Nmap Scan           "
+    echo $okegreen"    [02] Create Payload            "
+    echo $okegreen"    [03] Create Metasploit Listener"
+    echo $okegreen"    [04] Start Nessus              "
+    echo $okegreen"    [05] Start Apache2          "
+    echo $okegreen"    [06] Stop Apache2           "
+    echo $okegreen"    [07] Update & Upgrade System"
+    echo $okegreen"    [08] Remove Old Files       "
+    echo $okegreen"    [09] Chek For Updates       "
+    echo $okegreen"    [10] Exit                   "
 }
 
 show_ip_addresses() {
@@ -324,7 +320,8 @@ execute_option() {
             ;;
         *)
             echo ""
-            echo $red "Invalid option, choose between 1 and 10"
+            echo $red"Invalid option, choose between 1 and 10"
+            sleep 2
             ;;
     esac
 }
@@ -333,7 +330,7 @@ while true; do
     clear
     print_menu
     echo
-    echo $okegreen"┌─["$red"Easy Terminal$okegreen]──[$red~$okegreen]─["$yellow"Menu$okegreen]:"
+    echo $okegreen"┌─["$red"EasyTerminal$okegreen]──[$red~$okegreen]"
     read -p "└─────► " choice
     execute_option $choice
 done
