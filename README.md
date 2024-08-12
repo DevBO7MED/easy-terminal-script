@@ -1,5 +1,5 @@
 # Easy Terminal Script for Kali Linux
-f
+
 ## Description
 
 This bash script is designed for Kali Linux beginners and offers an interactive menu for managing various tools and system tasks. The script includes functionalities for handling Metasploit, Nessus, Apache2, and more. It also provides options for payload creation, system updates, and IP address display.
