@@ -12,7 +12,8 @@ orange='\e[0;33m'
 print_menu() {
     echo $Blue2"========================================================================="
     figlet "Easy Terminal" | lolcat
-    echo " [---] Welcome to Easy Terminal Version:1.2.6 Beta [---]"| lolcat 
+    echo "[---]       Welcome to Easy Terminal ( Version 1.3.8 Beta )       [---]"| lolcat 
+    echo "[---] GitHub ( https://github.com/DevBO7MED/easy-terminal-script )[---]"| lolcat
     figlet "BO7MED MIX YT" | lolcat
     echo $Blue2"========================================================================="
     echo 
@@ -29,7 +30,7 @@ print_menu() {
     echo $yellow "[7]. Update & Upgrade System  "  $yellow "[8]. Remove Old Files         "
     echo $yellow "=============================="  $yellow "=============================="
     echo $white "==============================" $white "=============================="
-    echo $white "[9]. Update Script            " $white "[10]. Exit                    "
+    echo $white "[9]. Chek For Updates         " $white "[10]. Exit                    "
     echo $white "==============================" $white "=============================="
 }
 
@@ -111,14 +112,14 @@ update_script() {
 
 nmap_options() {
     echo ""
-    echo -e $orange "  +------------------------------------------+"
-    echo -e $orange "  |$white [1] $yellow Basic Scan$orange                      |"
-    echo -e $orange "  |$white [2] $yellow Version Detection$orange               |"
-    echo -e $orange "  |$white [3] $yellow OS Detection$orange                    |"
-    echo -e $orange "  |$white [4] $yellow All Scan$orange                        |"
-    echo -e $orange "  +------------------------------------------+"
+    echo $orange "+------------------------------------------+"
+    echo $orange "|$white [1] $yellow Basic Scan$orange                          |"
+    echo $orange "|$white [2] $yellow Version Detection$orange                   |"
+    echo $orange "|$white [3] $yellow OS Detection$orange                        |"
+    echo $orange "|$white [4] $yellow All Scan$orange                            |"
+    echo $orange "+------------------------------------------+"
     echo ""
-    echo -ne $okegreen "  Choose Scan Type: ";tput sgr0
+    echo $okegreen "Choose Scan Type: ";tput sgr0
     read scan_type
 
     case $scan_type in
@@ -136,7 +137,7 @@ nmap_options() {
             ;;
         *)
             echo ""
-            echo -e $red "Invalid option, choose between 1 and 4"
+            echo $red "Invalid option, choose between 1 and 4"
             nmap_options
             ;;
     esac
@@ -144,21 +145,22 @@ nmap_options() {
 
 payload_option() {
     echo ""
-    echo -e $orange "  +------------------------------------------+"
-    echo -e $orange "  |$white [1] $yellow windows/meterpreter/reverse_tcp$orange   |"
-    echo -e $orange "  |$white [2] $yellow windows/meterpreter/reverse_http$orange  |"
-    echo -e $orange "  |$white [3] $yellow windows/meterpreter/reverse_https$orange |"
-    echo -e $orange "  |$white [4] $yellow linux/x86/meterpreter/reverse_tcp$orange  |"
-    echo -e $orange "  |$white [5] $yellow linux/x64/meterpreter/reverse_tcp$orange  |"
-    echo -e $orange "  |$white [6] $yellow php/meterpreter/reverse_tcp$orange       |"
-    echo -e $orange "  |$white [7] $yellow python/meterpreter/reverse_tcp$orange    |"
-    echo -e $orange "  |$white [8] $yellow android/meterpreter/reverse_tcp$orange   |"
-    echo -e $orange "  |$white [9] $yellow ios/meterpreter/reverse_tcp$orange       |"
-    echo -e $orange "  |$white [10]$yellow unix/meterpreter/reverse_tcp$orange      |"
-    echo -e $orange "  +------------------------------------------+"
+    echo $orange "+------------------------------------------+"
+    echo $orange "|$white [1] $yellow windows/meterpreter/reverse_tcp$orange     |"
+    echo $orange "|$white [2] $yellow windows/meterpreter/reverse_http$orange    |"
+    echo $orange "|$white [3] $yellow windows/meterpreter/reverse_https$orange   |"
+    echo $orange "|$white [4] $yellow linux/x86/meterpreter/reverse_tcp$orange   |"
+    echo $orange "|$white [5] $yellow linux/x64/meterpreter/reverse_tcp$orange   |"
+    echo $orange "|$white [6] $yellow php/meterpreter/reverse_tcp$orange         |"
+    echo $orange "|$white [7] $yellow python/meterpreter/reverse_tcp$orange      |"
+    echo $orange "|$white [8] $yellow android/meterpreter/reverse_tcp$orange     |"
+    echo $orange "|$white [9] $yellow ios/meterpreter/reverse_tcp$orange         |"
+    echo $orange "|$white [10]$yellow unix/meterpreter/reverse_tcp$orange        |"
+    echo $orange "+------------------------------------------+"
     echo ""
-    echo -ne $okegreen "  Choose Payload Type: ";tput sgr0
+    echo $okegreen "Choose Payload Type: ";tput sgr0
     read payload_type
+    
 
     case $payload_type in
         1)
@@ -223,9 +225,9 @@ execute_option() {
             echo
             read -p "Enter Payload name (e.g., \"Payload.exe\"): " N
             echo
-            read -p "Enter Platform Name (e.g., \"Windows\") " platform1
+            read -p "Enter Platform Name (e.g., \"windows\") " platform1
             echo
-            read -p "Enter 86 or 64 Bit (e.g., \"x86\") " platform2
+            read -p "Enter x86 or x64 Bit (e.g., \"x86\") " platform2
             echo
             echo "Creating Payload..."
             echo
@@ -237,6 +239,7 @@ execute_option() {
             fi
             echo
             echo "Payload Path: $P/$N"
+            echo
             echo "Press [ENTER] to return to the menu."
             read cont
             clear
@@ -255,8 +258,11 @@ execute_option() {
         4)  
             echo
             sudo service nessusd start
+            echo
             echo "Opening Nessus Web Interface..."
-            xdg-open http://localhost:8834
+            echo
+            echo "Nessus Service Started Successfully You Can Now Open This Link To Start Nessus \"http://localhost:8834\""
+            echo
             echo "Press [ENTER] to return to the menu."
             read cont
             clear
@@ -264,7 +270,9 @@ execute_option() {
         5)  
             echo
             echo "Starting Apache2..."
+            echo
             sudo service apache2 start
+            echo
             echo "Apache2 started."
             echo
             echo "Press [ENTER] to return to the menu."
@@ -274,7 +282,9 @@ execute_option() {
         6)  
             echo
             echo "Stopping Apache2..."
+            echo
             sudo service apache2 stop
+            echo
             echo "Apache2 stopped."
             echo
             echo "Press [ENTER] to return to the menu."
@@ -284,7 +294,9 @@ execute_option() {
         7)  
             echo
             echo "Updating and Upgrading System..."
+            echo
             sudo apt-get update && sudo apt-get upgrade -y
+            echo
             echo "System updated and upgraded."
             echo
             echo "Press [ENTER] to return to the menu."
@@ -312,7 +324,7 @@ execute_option() {
             ;;
         *)
             echo ""
-            echo -e $red "Invalid option, choose between 1 and 10"
+            echo $red "Invalid option, choose between 1 and 10"
             ;;
     esac
 }
