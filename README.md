@@ -24,7 +24,7 @@ bash
 
 sudo ./install.sh
 
-##Usage
+## Usage
 
 After the installation is complete, you can run the script with:
 
@@ -32,12 +32,12 @@ bash
 
 ./eterm.sh
 
-##Troubleshooting
+## Troubleshooting
 
 Permissions Issues: Ensure you have the necessary permissions to execute the script. Use chmod +x eterm.sh if needed.
 
 Dependencies: If you encounter issues related to missing dependencies, make sure all required packages are installed.
 
-##Contributing
+## Contributing
 If you would like to contribute to the development of this script, please fork the repository, make your changes, and submit a pull request.
 
