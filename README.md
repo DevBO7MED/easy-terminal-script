@@ -21,8 +21,9 @@ Run the Installation Script
 Make sure you have sudo privileges to install the necessary packages:
 
 bash
-ن
+
 sudo ./install.sh
+
 ##Usage
 
 After the installation is complete, you can run the script with:
@@ -30,6 +31,7 @@ After the installation is complete, you can run the script with:
 bash
 
 ./eterm.sh
+
 ##Troubleshooting
 
 Permissions Issues: Ensure you have the necessary permissions to execute the script. Use chmod +x eterm.sh if needed.
