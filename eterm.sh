@@ -492,7 +492,7 @@ print_menu() {
 
 
 
-    echo "[---]       Welcome to Easy Terminal ( Version 1.4.1 Beta )       [---]"| lolcat 
+    echo "[---]       Welcome to Easy Terminal ( Version 1.4.2 Beta )       [---]"| lolcat 
 
 
 
