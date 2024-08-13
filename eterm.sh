@@ -9,384 +9,113 @@ if [ "$(id -u)" != "0" ]; then
     echo "This script must be run as root" 1>&2
 
     exit 1
-
 fi
 
-
-
 menu() {
-
 clear
-
 echo "  ____ _   _ _____ ____ _  _____ _   _  ____ "
-
 echo " / ___| | | | ____/ ___| |/ /_ _| \ | |/ ___|"
-
 echo "| |   | |_| |  _|| |   | ' / | ||  \| | |  _   _    _    _ "
-
 echo "| |___|  _  | |__| |___| . \ | || |\  | |_| | (_)  (_)  (_)"
-
 echo " \____|_| |_|_____\____|_|\_\___|_| \_|\____|"
-
 echo
-
 echo
-
 }
-
-
 
 menu
 
-
-
 # Define colors
-
-
-
 RED='\033[0;31m'
-
-
-
 GREEN='\033[0;32m'
-
-
-
 NC='\033[0m' # No Color
-
-
-
-
-
-
-
 # Function to check if a command exists
-
-
-
 check_command() {
 
-
-
     command -v "$1" >/dev/null 2>&1
-
-
-
 }
-
-
-
-
-
-
 
 # Function to check if a file exists at specific paths
-
-
-
 check_file() {
 
-
-
     for path in "$@"; do
-
-
-
         if [ -f "$path" ]; then
-
-
-
             return 0
-
-
-
         fi
-
-
-
     done
-
-
-
+    
     return 1
 
-
-
 }
-
-
-
-
-
-
 
 # Function to check for root privileges
 
-
-
 check_root() {
 
-
-
     printf "Checking for root privileges: "
-
-
-
     if [ "$(id -u)" -eq 0 ]; then
-
-
-
         printf "[ ${GREEN}✔${NC} ]\n"
-
-
-
     else
-
-
-
         printf "[ ${RED}✘${NC} ]\n"
-
-
-
         return 1
-
-
-
     fi
-
-
-
 }
-
-
-
-
-
-
 
 # Function to check each required program
-
-
-
 check_program() {
-
-
-
     printf "Checking for %-10s       " "$1":
-
-
-
     if check_command "$1" || check_file "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"; then
-
-
-
         printf "[ ${GREEN}✔${NC} ]\n"
-
-
-
     else
-
-
-
         printf "[ ${RED}✘${NC} ]\n"
-
-
-
         MISSING_PROGRAMS="$MISSING_PROGRAMS $1"
-
-
-
     fi
-
-
-
 }
-
-
-
-
-
-
 
 # Check for Metasploit specifically
-
-
-
 check_metasploit() {
 
-
-
     printf "Checking for Metasploit:      "
-
-
-
     if check_command "msfconsole" || check_file "/usr/bin/msfconsole" "/usr/local/bin/msfconsole" "/bin/msfconsole" "/usr/sbin/msfconsole" "/sbin/msfconsole"; then
-
-
-
         printf "[ ${GREEN}✔${NC} ]\n"
-
-
-
     else
-
-
-
         printf "[ ${RED}✘${NC} ]\n"
-
-
-
         MISSING_PROGRAMS="$MISSING_PROGRAMS metasploit"
-
-
-
     fi
-
-
-
 }
-
-
-
-
-
-
 
 # Start checks
 
-
-
 echo
-
-
-
 check_root
-
-
-
 sleep 1
-
-
-
-
-
-
-
 MISSING_PROGRAMS=""
 
-
-
-
-
-
-
 check_program xterm "/usr/bin/xterm" "/usr/local/bin/xterm" "/bin/xterm" "/usr/sbin/xterm" "/sbin/xterm"
-
-
-
 sleep 1
-
-
-
 check_program lolcat "/usr/bin/lolcat" "/usr/local/bin/lolcat" "/bin/lolcat" "/usr/sbin/lolcat" "/sbin/lolcat"
-
-
-
 sleep 1
-
-
-
 check_program figlet "/usr/bin/figlet" "/usr/local/bin/figlet" "/bin/figlet" "/usr/sbin/figlet" "/sbin/figlet"
-
-
-
 sleep 1
-
-
-
 check_metasploit
-
-
-
 sleep 1
-
-
-
 check_program msfvenom "/usr/bin/msfvenom" "/usr/local/bin/msfvenom" "/bin/msfvenom" "/usr/sbin/msfvenom" "/sbin/msfvenom"
 
-
-
-
-
-
-
 # Handle missing programs
-
-
-
 if [ -n "$MISSING_PROGRAMS" ]; then
-
-
-
     echo "Some required programs are missing. Please run install.sh to install them."
-
-
-
     read -p "Press Enter to exit..."
-
-
-
     exit 1
-
-
-
 fi
 
-
-
-
-
-
-
 echo
-
-
 
 echo "All required programs are installed."
 
-
-
 echo
-
-
 
 echo "Press Enter to continue with the script..."
 
-
-
 read cont
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Define Colors
 
