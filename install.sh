@@ -91,6 +91,7 @@ fi
 
 echo "Setting execute permissions for eterm.sh..."
 chmod +x eterm.sh
+chmod +x eterm
 if [ $? -eq 0 ]; then
     clear
     menu
@@ -292,6 +293,3 @@ echo
 echo "You Can Now Open Easy Terminal Script Press Enter to exit"
 
 read cont
-
-
-
